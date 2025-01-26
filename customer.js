@@ -8,7 +8,7 @@ async function main(){
     await mongoose.connect('mongodb://127.0.0.1:27017/relation')
 }
 
-const orderSchema = mongoose.Schema({
+const orderSchema = new mongoose.Schema({
     item:String,
     price:Number,
 })
@@ -19,22 +19,31 @@ const customerSchema = new mongoose.Schema({
         ref:'Order'
     },]
 })
-const Order = new mongoose.model("order",orderSchema);
-const Customer = new mongoose.model("customer",customerSchema)
+const Order =  mongoose.model("Order",orderSchema);
+const Customer = mongoose.model("customer",customerSchema)
 
-const addCustomer = async ()=>{
-    let cust1 = new Customer({
-        name:"Shivam Kumar",
-    });
-    let order1 = await Order.findOne({item:"chocolate"})
-    let order2 = await Order.findOne({item:"samosa"})
-    cust1.orders.push(order1);
-    cust1.orders.push(order2);
-    let res = await cust1.save()
-    console.log(res)
+// const addCustomer = async ()=>{
+//     let cust1 = new Customer({
+//         name:"Shivank Kumar",
+//     });
+//     let order1 = await Order.findOne({item:"chocolate"})
+//     let order2 = await Order.findOne({item:"samosa"})
+//     cust1.orders.push(order1);
+//     cust1.orders.push(order2);
+//     let res = await cust1.save()
+//     console.log(res)
     
+// }
+
+
+const findCustomer = async ()=>{
+    try{
+        const cust = await Customer.find({name:"Shivam Kumar"}).populate("orders");
+        console.log(cust[0])
+    } catch(err){
+        console.log(err.message);
+    }
 }
-addCustomer()
 // const addOrder = async ()=>{
 //     const res = await Order.insertMany([
 //         {item:"samosa",price:10},
@@ -45,3 +54,4 @@ addCustomer()
 // }
 
 // addOrder();
+findCustomer()
